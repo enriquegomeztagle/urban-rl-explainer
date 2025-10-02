@@ -61,7 +61,7 @@ PRESET_TECHNICAL = {
 
 BASE_CRITICAL_RULES = [
     "- NUNCA inventes información que no esté explícitamente en el contexto proporcionado.",
-    "- Solo responde 'no sé' si el contexto está completamente vacío o dice explícitamente que falta información.",
+    "- Solo responde 'no sé' si los campos están literalmente vacíos o contienen únicamente texto placeholder.",
     "- Los EJEMPLOS son solo para mostrar el formato, NO uses sus datos. Usa ÚNICAMENTE los datos del contexto actual.",
     "- No repitas ni cites literalmente el mensaje de la persona. No incluyas su texto en la respuesta.",
     "- No inventes datos, números, métricas, cálculos, o decisiones que no estén en el contexto.",
@@ -122,6 +122,8 @@ SYSTEM_PROMPT_LEVEL_CONFIG = {
             "- Evita jerga específica de RL/ML (no menciones Q-learning, DQN, políticas, Bellman, etc.).",
             "- Términos permitidos: zonificación, morfología urbana, accesibilidad, densidad, uso mixto, red vial, conectividad, equipamiento.",
             "- Máximo 250 palabras. Tono profesional pero accesible.",
+            "- IMPORTANTE: Usa EXACTAMENTE la información proporcionada en el contexto. No digas 'no sé' si hay información disponible.",
+            "- OBLIGATORIO: Si hay texto en los campos de cálculos y decisión, úsalo directamente sin cuestionar su completitud.",
         ],
         "format_section": (
             "FORMATO DE SALIDA (EXACTO):\n\n"
@@ -546,11 +548,6 @@ def build_user_prompt(
     rules_clean = (rules or "").strip()
     calculations_clean = (calculations or "").strip()
     question_clean = (question or "").strip()
-
-    print(f"DEBUG - objective_clean: '{objective_clean}' (empty: {not objective_clean})")
-    print(f"DEBUG - rules_clean: '{rules_clean}' (empty: {not rules_clean})")
-    print(f"DEBUG - calculations_clean: '{calculations_clean}' (empty: {not calculations_clean})")
-    print(f"DEBUG - question_clean: '{question_clean}' (empty: {not question_clean})")
 
     rules_in_simple = (
         "- " + rules_clean
