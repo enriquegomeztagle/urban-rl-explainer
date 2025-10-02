@@ -526,8 +526,8 @@ else:
             max_tokens=1024,
             openai_api_key=OPENAI_API_KEY,
             openai_api_base=base_url,
-            timeout=30,
-            max_retries=2,
+            timeout=70,
+            max_retries=3,
         )
         logger.info(f"[LLM] Initialized with model: {OPENAI_MODEL}")
         if test_llm_connection():
@@ -606,7 +606,11 @@ def build_user_prompt(
     )
 
     format_params = {
-        "objective": objective_clean if objective_clean else "No se especificó un objetivo concreto",
+        "objective": (
+            objective_clean
+            if objective_clean
+            else "No se especificó un objetivo concreto"
+        ),
         "rules_in_simple": rules_in_simple,
         "calculations_in_simple": calculations_in_simple,
         "clear_decision": clear_decision,
