@@ -26,37 +26,37 @@ if "response_cache" not in st.session_state:
 if "metrics_history" not in st.session_state:
     st.session_state["metrics_history"] = []
 
-PH_OBJECTIVE = "Ej.: Maximizar que todas las viviendas tengan acceso a salud, educación, áreas verdes y supermercado dentro de 15 minutos."
-PH_RULES = "Ej.: No construir en ríos; priorizar compatibilidad entre usos; mantener conectividad con calles existentes; evitar saturar un servicio en una sola zona, etc."
-PH_CALCULATIONS = "Ej.: Contar servicios cercanos por vivienda; medir distancias a pie; aplicar una matriz de compatibilidad sencilla; evitar duplicar el mismo servicio si ya hay cobertura suficiente."
-PH_QUESTION = "Ej.: ¿Por qué construiste un hospital aquí?"
+PLACEHOLDER_OBJECTIVE = "Ej.: Maximizar que todas las viviendas tengan acceso a salud, educación, áreas verdes y supermercado dentro de 15 minutos."
+PLACEHOLDER_RULES = "Ej.: No construir en ríos; priorizar compatibilidad entre usos; mantener conectividad con calles existentes; evitar saturar un servicio en una sola zona, etc."
+PLACEHOLDER_CALCULATIONS = "Ej.: Contar servicios cercanos por vivienda; medir distancias a pie; aplicar una matriz de compatibilidad sencilla; evitar duplicar el mismo servicio si ya hay cobertura suficiente."
+PLACEHOLDER_QUESTION = "Ej.: ¿Por qué construiste un hospital aquí?"
 
-PH_TECH_OBJECTIVE = r"Maximizar el retorno acumulado \sum_t \gamma^t r_t bajo la política óptima \pi^\*, reduciendo la distancia media a servicios esenciales con umbral N=15 (Manhattan)."
-PH_TECH_RULES = (
+PLACEHOLDER_TECH_OBJECTIVE = r"Maximizar el retorno acumulado \sum_t \gamma^t r_t bajo la política óptima \pi^\*, reduciendo la distancia media a servicios esenciales con umbral N=15 (Manhattan)."
+PLACEHOLDER_TECH_RULES = (
     "• Política ε-greedy con ε0=1.0 y decaimiento Gompertz: ε(x)=exp(exp(-c·x + b)), b=-e, c=-0.03883259.\n"
     "• Tasa de aprendizaje α=0.5, descuento γ=0.95.\n"
     "• Compatibilidad espacial según matriz C∈[1,5]; evaluar vecinos a distancia Manhattan 2.\n"
     "• No construir en obstáculos (ríos/zonas no edificables); respetar conectividad vial."
 )
-PH_TECH_CALCULATIONS = (
+PLACEHOLDER_TECH_CALCULATIONS = (
     "• Actualización Q (Bellman): Q(s_t,a_t) ← Q(s_t,a_t) + α [ r_{t+1} + γ max_a Q(s_{t+1},a) − Q(s_t,a_t) ].\n"
     "• Recompensa residencial: sumar compatibilidades de servicios cercanos ponderadas por maxAmount=2 por tipo; decrementar al exceder; total por ciudad R=∑_i R_i.\n"
     "• Cobertura: contar servicios distintos por residencia dentro de N=15.\n"
     "• (Alternativa DQN) MLP [128,64,128], dropout 0.22; exploración ε-greedy idéntica."
 )
-PH_TECH_QUESTION = r"¿Por qué la política \pi eligió colocar hospital en la celda (i,j) dadas las Q(s,a) actuales y el maxAmount por servicio?"
+PLACEHOLDER_TECH_QUESTION = r"¿Por qué la política \pi eligió colocar hospital en la celda (i,j) dadas las Q(s,a) actuales y el maxAmount por servicio?"
 
 PRESET_SIMPLE = {
-    "objective": PH_OBJECTIVE,
-    "rules": PH_RULES,
-    "calculations": PH_CALCULATIONS,
-    "question": PH_QUESTION,
+    "objective": PLACEHOLDER_OBJECTIVE,
+    "rules": PLACEHOLDER_RULES,
+    "calculations": PLACEHOLDER_CALCULATIONS,
+    "question": PLACEHOLDER_QUESTION,
 }
 PRESET_TECHNICAL = {
-    "objective": PH_TECH_OBJECTIVE,
-    "rules": PH_TECH_RULES,
-    "calculations": PH_TECH_CALCULATIONS,
-    "question": PH_TECH_QUESTION,
+    "objective": PLACEHOLDER_TECH_OBJECTIVE,
+    "rules": PLACEHOLDER_TECH_RULES,
+    "calculations": PLACEHOLDER_TECH_CALCULATIONS,
+    "question": PLACEHOLDER_TECH_QUESTION,
 }
 
 BASE_CRITICAL_RULES = [
@@ -80,12 +80,12 @@ SYSTEM_PROMPT_LEVEL_CONFIG = {
         ],
         "format_section": (
             "FORMATO DE SALIDA (EXACTO):\n\n"
-            "Dado el objetivo del agente urbano, que es {objetivo},\n"
+            "Dado el objetivo del agente urbano, que es {objective},\n"
             "y las reglas establecidas:\n"
-            "{reglas_en_simple}\n\n"
+            "{rules_in_simple}\n\n"
             "Se realizaron los cálculos:\n"
-            "{calculos_en_simple}\n\n"
-            "Es por eso que se decidió: {decision_clara}"
+            "{calculations_in_simple}\n\n"
+            "Es por eso que se decidió: {clear_decision}"
         ),
         "style_guides": [
             '- Explica con palabras muy simples: "vecindarios", "cercanía", "variedad de lugares", "caminos", "no saturar".',
@@ -195,7 +195,6 @@ SYSTEM_PROMPT_LEVEL_CONFIG = {
 
 
 def build_system_prompt(level: int) -> str:
-    """Compose the system prompt by combining the base rules with level-specific guidance."""
     config = SYSTEM_PROMPT_LEVEL_CONFIG.get(level, SYSTEM_PROMPT_LEVEL_CONFIG[1])
 
     rules = BASE_CRITICAL_RULES + config.get("rules_extra", [])
@@ -224,7 +223,6 @@ def build_system_prompt(level: int) -> str:
 
 
 def get_system_prompt_by_level(level: int) -> str:
-    """Retorna el prompt del sistema según el nivel técnico seleccionado."""
     return build_system_prompt(level)
 
 
@@ -379,45 +377,45 @@ with col_p2:
         st.session_state["question"] = p["question"]
 
 if preset_choice.startswith("Sencillo"):
-    CUR_PH_OBJ = PH_OBJECTIVE
-    CUR_PH_REG = PH_RULES
-    CUR_PH_CAL = PH_CALCULATIONS
-    CUR_PH_PRE = PH_QUESTION
+    current_placeholder_objective = PLACEHOLDER_OBJECTIVE
+    current_placeholder_rules = PLACEHOLDER_RULES
+    current_placeholder_calculations = PLACEHOLDER_CALCULATIONS
+    current_placeholder_question = PLACEHOLDER_QUESTION
 else:
-    CUR_PH_OBJ = PH_TECH_OBJECTIVE
-    CUR_PH_REG = PH_TECH_RULES
-    CUR_PH_CAL = PH_TECH_CALCULATIONS
-    CUR_PH_PRE = PH_TECH_QUESTION
+    current_placeholder_objective = PLACEHOLDER_TECH_OBJECTIVE
+    current_placeholder_rules = PLACEHOLDER_TECH_RULES
+    current_placeholder_calculations = PLACEHOLDER_TECH_CALCULATIONS
+    current_placeholder_question = PLACEHOLDER_TECH_QUESTION
 
-st.session_state["PH_OBJECTIVE"] = CUR_PH_OBJ
-st.session_state["PH_RULES"] = CUR_PH_REG
-st.session_state["PH_CALCULATIONS"] = CUR_PH_CAL
-st.session_state["PH_QUESTION"] = CUR_PH_PRE
+st.session_state["placeholder_objective"] = current_placeholder_objective
+st.session_state["placeholder_rules"] = current_placeholder_rules
+st.session_state["placeholder_calculations"] = current_placeholder_calculations
+st.session_state["placeholder_question"] = current_placeholder_question
 
 objective = st.text_area(
     "1) Objetivo del agente",
-    placeholder=CUR_PH_OBJ,
+    placeholder=current_placeholder_objective,
     height=100,
     key="objective",
     help="🎯 Describe qué busca optimizar el agente. Ejemplo: maximizar accesibilidad a servicios, minimizar distancias caminables.",
 )
 rules = st.text_area(
     "2) Reglas que sigue el agente",
-    placeholder=CUR_PH_REG,
+    placeholder=current_placeholder_rules,
     height=140,
     key="rules",
     help="📋 Define las restricciones y políticas del agente. Ejemplo: no construir en zonas protegidas, mantener diversidad de servicios, respetar capacidad máxima.",
 )
 calculations = st.text_area(
     "3) Cálculos realizados",
-    placeholder=CUR_PH_CAL,
+    placeholder=current_placeholder_calculations,
     height=140,
     key="calculations",
     help="🧮 Especifica las métricas y evaluaciones realizadas. Ejemplo: distancias Manhattan, matriz de compatibilidad, conteo de servicios cercanos.",
 )
 question = st.text_area(
     "4) Pregunta persona",
-    placeholder=CUR_PH_PRE,
+    placeholder=current_placeholder_question,
     height=80,
     key="question",
     help="❓ Formula la pregunta sobre la decisión del agente. Ejemplo: ¿Por qué colocó el hospital aquí? ¿Por qué no eligió esta otra ubicación?",
@@ -545,13 +543,15 @@ else:
 def build_user_prompt(
     objective: str, rules: str, calculations: str, question: str
 ) -> str:
-    obj = (objective or "").strip()
-    reg = (rules or "").strip()
-    calc = (calculations or "").strip()
-    q = (question or "").strip()
+    objective_clean = (objective or "").strip()
+    rules_clean = (rules or "").strip()
+    calculations_clean = (calculations or "").strip()
+    question_clean = (question or "").strip()
 
     rules_in_simple = (
-        "- " + reg if reg else "no sé - No se proporcionaron reglas del agente."
+        "- " + rules_clean
+        if rules_clean
+        else "no sé - No se proporcionaron reglas del agente."
     )
     if (
         "Se realizaron los cálculos" in rules_in_simple
@@ -569,8 +569,8 @@ def build_user_prompt(
     )
 
     calculations_in_simple = (
-        "- " + calc
-        if calc
+        "- " + calculations_clean
+        if calculations_clean
         else "no sé - No se proporcionaron cálculos realizados por el agente."
     )
     if (
@@ -588,12 +588,12 @@ def build_user_prompt(
         calculations_in_simple,
     )
 
-    lower_q = q.lower()
-    if "hospital" in lower_q:
+    lower_question = question_clean.lower()
+    if "hospital" in lower_question:
         clear_decision = "Construir un hospital aquí"
-    elif "escuela" in lower_q or "colegio" in lower_q:
+    elif "escuela" in lower_question or "colegio" in lower_question:
         clear_decision = "Ubicar una escuela en este sitio"
-    elif "parque" in lower_q or "área verde" in lower_q:
+    elif "parque" in lower_question or "área verde" in lower_question:
         clear_decision = "Crear un área verde en este punto"
     else:
         clear_decision = "Tomar esta acción en este sitio"
@@ -604,12 +604,19 @@ def build_user_prompt(
         "system_prompt_override", default_prompt
     )
 
-    prompt_text = active_system_prompt.format(
-        objective=obj if obj else "no sé",
-        rules_in_simple=rules_in_simple,
-        calculations_in_simple=calculations_in_simple,
-        clear_decision=clear_decision,
-    )
+    format_params = {
+        "objective": objective_clean if objective_clean else "no sé",
+        "rules_in_simple": rules_in_simple,
+        "calculations_in_simple": calculations_in_simple,
+        "clear_decision": clear_decision,
+    }
+
+    try:
+        prompt_text = active_system_prompt.format(**format_params)
+    except KeyError as e:
+        logger.warning(f"Missing format parameter: {e}. Using fallback prompt.")
+        prompt_text = active_system_prompt
+
     prompt_text = re.sub(
         r"(?<!\n)\s*Se realizaron los cálculos",
         "\n\nSe realizaron los cálculos",
@@ -626,7 +633,6 @@ def build_user_prompt(
 def generate_response_from_inputs(
     objective_in: str, rules_in: str, calculations_in: str, question_in: str
 ) -> tuple[str | None, dict]:
-    """Genera respuesta y retorna (respuesta, métricas)"""
     metrics = {
         "start_time": time.time(),
         "end_time": None,
@@ -642,25 +648,32 @@ def generate_response_from_inputs(
         metrics["duration"] = metrics["end_time"] - metrics["start_time"]
         return None, metrics
 
-    obj_eff = _clean(
+    objective_effective = _clean(
         value_or_default(
-            objective_in, st.session_state.get("PH_OBJECTIVE", PH_OBJECTIVE)
+            objective_in,
+            st.session_state.get("placeholder_objective", PLACEHOLDER_OBJECTIVE),
         )
     )
-    reg_eff = _clean(
-        value_or_default(rules_in, st.session_state.get("PH_RULES", PH_RULES))
-    )
-    calc_eff = _clean(
+    rules_effective = _clean(
         value_or_default(
-            calculations_in, st.session_state.get("PH_CALCULATIONS", PH_CALCULATIONS)
+            rules_in, st.session_state.get("placeholder_rules", PLACEHOLDER_RULES)
         )
     )
-    q_eff = _clean(
-        value_or_default(question_in, st.session_state.get("PH_QUESTION", PH_QUESTION))
+    calculations_effective = _clean(
+        value_or_default(
+            calculations_in,
+            st.session_state.get("placeholder_calculations", PLACEHOLDER_CALCULATIONS),
+        )
+    )
+    question_effective = _clean(
+        value_or_default(
+            question_in,
+            st.session_state.get("placeholder_question", PLACEHOLDER_QUESTION),
+        )
     )
 
     cache_key = hashlib.md5(
-        f"{obj_eff}|{reg_eff}|{calc_eff}|{q_eff}|{metrics['technical_level']}".encode()
+        f"{objective_effective}|{rules_effective}|{calculations_effective}|{question_effective}|{metrics['technical_level']}".encode()
     ).hexdigest()
 
     if cache_key in st.session_state["response_cache"]:
@@ -671,10 +684,14 @@ def generate_response_from_inputs(
         metrics["duration"] = metrics["end_time"] - metrics["start_time"]
         return cached_data["response"], metrics
 
-    prompt = build_user_prompt(obj_eff, reg_eff, calc_eff, q_eff)
+    prompt = build_user_prompt(
+        objective_effective, rules_effective, calculations_effective, question_effective
+    )
 
     try:
-        logger.info(f"[LLM] Generating response for pregunta: {q_eff[:80]}...")
+        logger.info(
+            f"[LLM] Generating response for pregunta: {question_effective[:80]}..."
+        )
         is_custom = "system_prompt_override" in st.session_state
         logger.info(f"[LLM] Using {'custom' if is_custom else 'default'} system prompt")
 
@@ -797,7 +814,8 @@ with tab1:
                     )
         else:
             question_text = value_or_default(
-                question, st.session_state.get("PH_QUESTION", PH_QUESTION)
+                question,
+                st.session_state.get("placeholder_question", PLACEHOLDER_QUESTION),
             )
             st.session_state["conversation_history"].append(
                 {
