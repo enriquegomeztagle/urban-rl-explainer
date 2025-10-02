@@ -547,10 +547,15 @@ def build_user_prompt(
     calculations_clean = (calculations or "").strip()
     question_clean = (question or "").strip()
 
+    print(f"DEBUG - objective_clean: '{objective_clean}' (empty: {not objective_clean})")
+    print(f"DEBUG - rules_clean: '{rules_clean}' (empty: {not rules_clean})")
+    print(f"DEBUG - calculations_clean: '{calculations_clean}' (empty: {not calculations_clean})")
+    print(f"DEBUG - question_clean: '{question_clean}' (empty: {not question_clean})")
+
     rules_in_simple = (
         "- " + rules_clean
         if rules_clean
-        else "no sé - No se proporcionaron reglas del agente."
+        else "- No se proporcionaron reglas específicas del agente."
     )
     if (
         "Se realizaron los cálculos" in rules_in_simple
@@ -570,7 +575,7 @@ def build_user_prompt(
     calculations_in_simple = (
         "- " + calculations_clean
         if calculations_clean
-        else "no sé - No se proporcionaron cálculos realizados por el agente."
+        else "- No se proporcionaron cálculos específicos realizados por el agente."
     )
     if (
         "Se realizaron los cálculos" in calculations_in_simple
@@ -604,7 +609,7 @@ def build_user_prompt(
     )
 
     format_params = {
-        "objective": objective_clean if objective_clean else "no sé",
+        "objective": objective_clean if objective_clean else "No se especificó un objetivo concreto",
         "rules_in_simple": rules_in_simple,
         "calculations_in_simple": calculations_in_simple,
         "clear_decision": clear_decision,
