@@ -61,7 +61,7 @@ PRESET_TECHNICAL = {
 
 BASE_CRITICAL_RULES = [
     "- NUNCA inventes información que no esté explícitamente en el contexto proporcionado.",
-    "- Si encuentras 'no sé' o información faltante en objetivo/reglas/cálculos, debes responder 'no sé' y solicitar esa información específica.",
+    "- Solo responde 'no sé' si el contexto está completamente vacío o dice explícitamente que falta información.",
     "- Los EJEMPLOS son solo para mostrar el formato, NO uses sus datos. Usa ÚNICAMENTE los datos del contexto actual.",
     "- No repitas ni cites literalmente el mensaje de la persona. No incluyas su texto en la respuesta.",
     "- No inventes datos, números, métricas, cálculos, o decisiones que no estén en el contexto.",
