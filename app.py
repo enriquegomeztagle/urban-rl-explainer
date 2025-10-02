@@ -344,7 +344,6 @@ with st.expander("🔧 Personalizar System Prompt (Avanzado)", expanded=False):
 
     custom_system_prompt = st.text_area(
         "System Prompt",
-        value=st.session_state["custom_system_prompt"],
         height=300,
         help="Este es el prompt que guía el comportamiento del LLM",
         key="custom_system_prompt",
