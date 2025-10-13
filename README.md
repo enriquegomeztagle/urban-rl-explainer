@@ -55,7 +55,7 @@ Este portal web permite explicar las decisiones de un agente de RL urbano en **t
 1. **Clonar el repositorio**
 
 ```bash
-git clone https://github.com/enriquegomeztagle/urban-rl-explainer.git
+git clone https://github.com/enriquegomeztagle/urban-rl-explainer-es
 ```
 
 2. **Crear entorno virtual**
