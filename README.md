@@ -14,9 +14,9 @@ Este portal web permite explicar las decisiones de un agente de RL urbano en **t
 
 ### 🎚️ Sistema de Niveles Técnicos
 
-- Adaptación automática del vocabulario según la audiencia
-- Tres niveles de complejidad con prompts especializados
-- Modo comparación para ver las tres respuestas simultáneamente
+- [ ] Adaptación automática del vocabulario según la audiencia
+- [ ] Tres niveles de complejidad con prompts especializados
+- [ ] Modo comparación para ver las tres respuestas simultáneamente
 
 ### 💾 Sistema de Caché Inteligente
 
@@ -264,48 +264,39 @@ Principales:
 - Máximo de tokens por respuesta: 1024 (configurable en código)
 - Requiere conexión a internet para consultas al LLM
 
-## 🔮 Roadmap Futuro
+## 📄 Licencia
 
-- [ ] Persistencia de caché en disco/base de datos
-- [ ] Soporte para múltiples modelos simultáneos
-- [ ] Exportación de conversaciones a PDF/Markdown
-- [ ] Sistema de retroalimentación de calidad
-- [ ] API REST para integración externa
-- [ ] Soporte multiidioma
+Este proyecto fue desarrollado para propósitos de investigación en planificación urbana utilizando agentes de Aprendizaje por Refuerzo y está destinado únicamente para evaluación académica.
 
-## 📄 License
+### Aviso de Copyright
 
-This project was developed for urban planning research purposes using Reinforcement Learning agents and is intended for academic evaluation only.
+© 2025 Enrique Ulises Baez Gomez Tagle. Todos los derechos reservados.
 
-### Copyright Notice
+### Términos de Uso
 
-© 2025 Enrique Ulises Baez Gomez Tagle. All rights reserved.
+**Solo Investigación y Evaluación**: Este código base está creado específicamente para investigación académica en planificación urbana utilizando técnicas de Aprendizaje por Refuerzo.
 
-### Usage Terms
+**Sin Uso Comercial**: Este proyecto no puede ser utilizado para propósitos comerciales sin el permiso escrito explícito del autor.
 
-**Research & Evaluation Only**: This codebase is created specifically for academic research in urban planning using Reinforcement Learning techniques.
+**Sin Redistribución**: El código no puede ser redistribuido, copiado o modificado sin autorización del autor.
 
-**No Commercial Use**: This project may not be used for commercial purposes without explicit written permission from the author.
+**Atribución Requerida**: Cualquier referencia a este trabajo debe incluir la atribución adecuada al autor.
 
-**No Redistribution**: The code may not be redistributed, copied, or modified without authorization from the author.
+### Propiedad Intelectual
 
-**Attribution Required**: Any reference to this work must include proper attribution to the author.
+Este proyecto representa trabajo original desarrollado independientemente para investigación en planificación urbana y Aprendizaje por Refuerzo. La arquitectura, implementación y decisiones de diseño son propiedad intelectual del autor.
 
-### Intellectual Property
+### Contacto
 
-This project represents original work developed independently for research in urban planning and Reinforcement Learning. The architecture, implementation, and design decisions are the intellectual property of the author.
+Para preguntas sobre este proyecto o licencias, por favor contactar:
 
-### Contact
-
-For questions regarding this project or licensing, please contact:
-
-- **Author**: Enrique Ulises Baez Gomez Tagle
+- **Autor**: Enrique Ulises Baez Gomez Tagle
 - **GitHub**: [@enriquegomeztagle](https://github.com/enriquegomeztagle)
-- **Purpose**: Urban Planning RL Research Project
+- **Propósito**: Proyecto de Investigación RL en Planificación Urbana
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Autor
 
 **Enrique Ulises Baez Gomez Tagle**
 
@@ -313,4 +304,4 @@ GitHub: [@enriquegomeztagle](https://github.com/enriquegomeztagle)
 
 ---
 
-**Made with ❤️ for urban planning research and AI explainability**
+**Hecho con ❤️ para investigación en planificación urbana y explicabilidad de IA**
