@@ -46,6 +46,17 @@ PLACEHOLDER_TECH_CALCULATIONS = (
 )
 PLACEHOLDER_TECH_QUESTION = r"¿Por qué la política \pi eligió colocar hospital en la celda (i,j) dadas las Q(s,a) actuales y el maxAmount por servicio?"
 
+PROMPT_FORMATTING_CONFIG = {
+    "rules_prefix": "- ",
+    "rules_no_data_text": "No se proporcionaron reglas específicas del agente.",
+    "calculations_prefix": "- ",
+    "calculations_no_data_text": "No se proporcionaron cálculos específicos realizados por el agente.",
+    "objective_no_data_text": "No se especificó un objetivo concreto",
+    "decision_default_text": "Tomar esta acción en este sitio",
+    "calculations_phrase": "Se realizaron los cálculos",
+    "decision_phrase": "Es por eso que se decidió:",
+}
+
 PRESET_SIMPLE = {
     "objective": PLACEHOLDER_OBJECTIVE,
     "rules": PLACEHOLDER_RULES,
@@ -550,42 +561,42 @@ def build_user_prompt(
     question_clean = (question or "").strip()
 
     rules_in_simple = (
-        "- " + rules_clean
+        PROMPT_FORMATTING_CONFIG["rules_prefix"] + rules_clean
         if rules_clean
-        else "- No se proporcionaron reglas específicas del agente."
+        else PROMPT_FORMATTING_CONFIG["rules_prefix"]
+        + PROMPT_FORMATTING_CONFIG["rules_no_data_text"]
     )
-    if (
-        "Se realizaron los cálculos" in rules_in_simple
-        and not rules_in_simple.endswith("\n")
-    ):
+    calculations_phrase = PROMPT_FORMATTING_CONFIG["calculations_phrase"]
+    if calculations_phrase in rules_in_simple and not rules_in_simple.endswith("\n"):
         rules_in_simple = rules_in_simple.replace(
-            "Se realizaron los cálculos", "\nSe realizaron los cálculos"
+            calculations_phrase, "\n" + calculations_phrase
         )
     if not rules_in_simple.endswith("\n"):
         rules_in_simple += "\n"
     rules_in_simple = re.sub(
-        r"(?<!\n)\s*Se realizaron los cálculos",
-        "\n\nSe realizaron los cálculos",
+        rf"(?<!\n)\s*{re.escape(calculations_phrase)}",
+        f"\n\n{calculations_phrase}",
         rules_in_simple,
     )
 
     calculations_in_simple = (
-        "- " + calculations_clean
+        PROMPT_FORMATTING_CONFIG["calculations_prefix"] + calculations_clean
         if calculations_clean
-        else "- No se proporcionaron cálculos específicos realizados por el agente."
+        else PROMPT_FORMATTING_CONFIG["calculations_prefix"]
+        + PROMPT_FORMATTING_CONFIG["calculations_no_data_text"]
     )
     if (
-        "Se realizaron los cálculos" in calculations_in_simple
+        calculations_phrase in calculations_in_simple
         and not calculations_in_simple.endswith("\n")
     ):
         calculations_in_simple = calculations_in_simple.replace(
-            "Se realizaron los cálculos", "\nSe realizaron los cálculos"
+            calculations_phrase, "\n" + calculations_phrase
         )
     if not calculations_in_simple.endswith("\n"):
         calculations_in_simple += "\n"
     calculations_in_simple = re.sub(
-        r"(?<!\n)\s*Se realizaron los cálculos",
-        "\n\nSe realizaron los cálculos",
+        rf"(?<!\n)\s*{re.escape(calculations_phrase)}",
+        f"\n\n{calculations_phrase}",
         calculations_in_simple,
     )
 
@@ -597,7 +608,7 @@ def build_user_prompt(
     elif "parque" in lower_question or "área verde" in lower_question:
         clear_decision = "Crear un área verde en este punto"
     else:
-        clear_decision = "Tomar esta acción en este sitio"
+        clear_decision = PROMPT_FORMATTING_CONFIG["decision_default_text"]
 
     tech_level = st.session_state.get("technical_level", 1)
     default_prompt = get_system_prompt_by_level(tech_level)
@@ -609,7 +620,7 @@ def build_user_prompt(
         "objective": (
             objective_clean
             if objective_clean
-            else "No se especificó un objetivo concreto"
+            else PROMPT_FORMATTING_CONFIG["objective_no_data_text"]
         ),
         "rules_in_simple": rules_in_simple,
         "calculations_in_simple": calculations_in_simple,
@@ -623,13 +634,14 @@ def build_user_prompt(
         prompt_text = active_system_prompt
 
     prompt_text = re.sub(
-        r"(?<!\n)\s*Se realizaron los cálculos",
-        "\n\nSe realizaron los cálculos",
+        rf"(?<!\n)\s*{re.escape(calculations_phrase)}",
+        f"\n\n{calculations_phrase}",
         prompt_text,
     )
+    decision_phrase = PROMPT_FORMATTING_CONFIG["decision_phrase"]
     prompt_text = re.sub(
-        r"(?<!\n)\s*Es por eso que se decidió:",
-        "\n\nEs por eso que se decidió:",
+        rf"(?<!\n)\s*{re.escape(decision_phrase)}",
+        f"\n\n{decision_phrase}",
         prompt_text,
     )
     return prompt_text
