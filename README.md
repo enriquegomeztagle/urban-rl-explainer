@@ -12,11 +12,10 @@ Este portal web permite explicar las decisiones de un agente de RL urbano en **t
 
 ## ✨ Características Principales
 
-### 🎚️ Sistema de Niveles Técnicos
-
-- [ ] Adaptación automática del vocabulario según la audiencia
-- [ ] Tres niveles de complejidad con prompts especializados
-- [ ] Modo comparación para ver las tres respuestas simultáneamente
+### Sistema de Niveles Técnicos
+- Adaptación automática del vocabulario según la audiencia
+- Tres niveles de complejidad con prompts especializados
+- Modo comparación para ver las tres respuestas simultáneamente
 
 ### 💾 Sistema de Caché Inteligente
 
@@ -56,7 +55,7 @@ Este portal web permite explicar las decisiones de un agente de RL urbano en **t
 1. **Clonar el repositorio**
 
 ```bash
-git clone https://github.com/enriquegomeztagle/urban-rl-explainer.git
+git clone https://github.com/enriquegomeztagle/urban-rl-explainer-es
 ```
 
 2. **Crear entorno virtual**
