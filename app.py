@@ -363,7 +363,6 @@ with st.expander("🔧 Personalizar System Prompt (Avanzado)", expanded=False):
     )
     if st.button("Aplicar prompt personalizado"):
         st.session_state["system_prompt_override"] = custom_system_prompt
-        st.session_state["custom_system_prompt"] = custom_system_prompt
         st.success("✓ Prompt personalizado aplicado")
     if st.button("Restaurar prompt por defecto"):
         if "system_prompt_override" in st.session_state:
